@@ -10,8 +10,9 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "fp-ts": "^2.16.11",
     "@prisma/client": "6.17.1",
+    "change-case": "^5.4.4",
+    "fp-ts": "^2.16.11",
     "uuid": "^11.1.0",
     "zod": "^4.1.12"
   }
