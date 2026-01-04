@@ -1,10 +1,11 @@
 import { z } from 'zod';
+import { countrySchema } from "../../countries/application/country_dto"
 
 export const StoreTypeSchema = z.enum(['supermarket', 'pharmacy', 'technology', 'clothes', 'pets', 'library']);
 
 export const StoreSchema = z.object({
-    id: z.string().uuid(),
-    country_id: z.string().uuid(),
+    id: z.uuid(),
+    country: countrySchema,
     name: z.string(),
     url: z.string().nullable(),
     thumbnail: z.string().nullable(),
