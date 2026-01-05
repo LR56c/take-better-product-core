@@ -1,16 +1,16 @@
-import { StoreDAO }            from "../domain/store_dao"
+import { BrandDAO }            from "../domain/brand_dao"
 import { type Either }         from "fp-ts/Either"
 import {
   BaseException
 }                              from "../../shared/domain/exceptions/base_exception"
 import { isLeft, left, right } from "fp-ts/lib/Either"
-import { ensureStoreExist }    from "../utils/ensure_store_exist"
+import { ensureBrandExist }    from "../utils/ensure_brand_exist"
 
-export class RemoveStore {
-  constructor( private dao: StoreDAO ) {}
+export class RemoveBrand {
+  constructor( private dao: BrandDAO ) {}
 
   async execute( id: string ): Promise<Either<BaseException[], boolean>> {
-    const exist = await ensureStoreExist( this.dao, id )
+    const exist = await ensureBrandExist( this.dao, id )
 
     if ( isLeft( exist ) ) {
       return left( exist.left )

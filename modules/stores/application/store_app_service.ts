@@ -1,19 +1,9 @@
-import { StoreDAO }      from "../domain/store_dao"
-import { AddStore }        from "./add_store"
-import { RemoveStore }     from "./remove_store"
-import { SearchStore }     from "./search_store"
-import { UpdateStore }     from "./update_store"
+import { StoreResponse } from "./store_response"
 
-export class StoreAppService {
-  readonly addStore: AddStore
-  readonly removeStore: RemoveStore
-  readonly searchStore: SearchStore
-  readonly updateStore: UpdateStore
+export abstract class StoreAppService {
 
-  constructor( storeDAO: StoreDAO ) {
-    this.addStore    = new AddStore( storeDAO )
-    this.removeStore = new RemoveStore( storeDAO )
-    this.searchStore = new SearchStore( storeDAO )
-    this.updateStore = new UpdateStore( storeDAO )
-  }
+  abstract search(queryUrl: string): Promise<StoreResponse[]>
+  abstract add( store: StoreResponse ): Promise<void>
+  abstract update( store: StoreResponse ): Promise<void>
+  abstract remove( id: string ): Promise<void>
 }
