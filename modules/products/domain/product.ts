@@ -4,7 +4,7 @@ import { wrapType }      from "../../shared/utils/wrap_type.js"
 import { BaseException } from "../../shared/domain/exceptions/base_exception.js"
 import { Errors }        from "../../shared/domain/exceptions/errors.js"
 import { ValidString }   from "../../shared/domain/value_objects/valid_string"
-import { ValidDecimal }  from "../../shared/domain/value_objects/valid_decimal"
+import { ValidNumber }   from "../../shared/domain/value_objects/valid_number"
 
 export class Product {
   private constructor(
@@ -16,10 +16,11 @@ export class Product {
     readonly url: ValidString,
     readonly title: ValidString,
     readonly description: ValidString | null,
-    readonly price: ValidDecimal,
+    readonly price: ValidNumber,
     readonly currency: ValidString,
     readonly additionalData: Record<string, any> | null,
-    readonly createdAt: ValidDate
+    readonly createdAt: ValidDate,
+    readonly updatedAt: ValidDate
   )
   {
   }
@@ -49,6 +50,7 @@ export class Product {
       price,
       currency,
       additionalData,
+      ValidDate.nowUTC(),
       ValidDate.nowUTC()
     )
   }
@@ -65,7 +67,8 @@ export class Product {
     price: number,
     currency: string,
     additionalData: Record<string, any> | null,
-    createdAt: Date | string
+    createdAt: Date | string,
+    updatedAt: Date | string
   ): Product {
     return new Product(
       UUID.from( id ),
@@ -76,10 +79,11 @@ export class Product {
       ValidString.from( url ),
       ValidString.from( title ),
       description ? ValidString.from( description ) : null,
-      ValidDecimal.from( price ),
+      ValidNumber.from( price ),
       ValidString.from( currency ),
       additionalData,
-      ValidDate.from( createdAt )
+      ValidDate.from( createdAt ),
+      ValidDate.from( updatedAt )
     )
   }
 
@@ -95,7 +99,8 @@ export class Product {
     price: number,
     currency: string,
     additionalData: Record<string, any> | null,
-    createdAt: Date | string
+    createdAt: Date | string,
+    updatedAt: Date | string
   ): Product | Errors {
     const errors = []
 
@@ -165,7 +170,7 @@ export class Product {
     }
 
     const priceValue = wrapType(
-      () => ValidDecimal.from( price ) )
+      () => ValidNumber.from( price ) )
 
     if ( priceValue instanceof BaseException ) {
       errors.push( priceValue )
@@ -185,6 +190,13 @@ export class Product {
       errors.push( createdAtValue )
     }
 
+    const updatedAtValue = wrapType(
+      () => ValidDate.from( updatedAt ) )
+
+    if ( updatedAtValue instanceof BaseException ) {
+      errors.push( updatedAtValue )
+    }
+
     if ( errors.length > 0 ) {
       return new Errors( errors )
     }
@@ -198,10 +210,11 @@ export class Product {
       urlValue as ValidString,
       titleValue as ValidString,
       descriptionValue,
-      priceValue as ValidDecimal,
+      priceValue as ValidNumber,
       currencyValue as ValidString,
       additionalData,
-      createdAtValue as ValidDate
+      createdAtValue as ValidDate,
+      updatedAtValue as ValidDate
     )
   }
 }

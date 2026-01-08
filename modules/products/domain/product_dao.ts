@@ -15,5 +15,6 @@ export abstract class ProductDAO {
     sortType ?: ValidString ): Promise<Either<BaseException[], PaginatedResult<Product>>>
   abstract add( product: Product ): Promise<Either<BaseException, boolean>>
   abstract update( product: Product ): Promise<Either<BaseException, boolean>>
+  abstract upsert( product: Product ): Promise<Either<BaseException, boolean>>
   abstract remove( id: UUID ): Promise<Either<BaseException, boolean>>
 }
