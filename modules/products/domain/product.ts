@@ -4,7 +4,7 @@ import { wrapType }      from "../../shared/utils/wrap_type.js"
 import { BaseException } from "../../shared/domain/exceptions/base_exception.js"
 import { Errors }        from "../../shared/domain/exceptions/errors.js"
 import { ValidString }   from "../../shared/domain/value_objects/valid_string"
-import { ValidNumber }   from "../../shared/domain/value_objects/valid_number"
+import { ValidDecimal } from "../../shared/domain/value_objects/valid_decimal"
 
 export class Product {
   private constructor(
@@ -16,7 +16,7 @@ export class Product {
     readonly url: ValidString,
     readonly title: ValidString,
     readonly description: ValidString | null,
-    readonly price: ValidNumber,
+    readonly price: ValidDecimal,
     readonly currency: ValidString,
     readonly additionalData: Record<string, any> | null,
     readonly createdAt: ValidDate,
@@ -79,7 +79,7 @@ export class Product {
       ValidString.from( url ),
       ValidString.from( title ),
       description ? ValidString.from( description ) : null,
-      ValidNumber.from( price ),
+      ValidDecimal.from( price ),
       ValidString.from( currency ),
       additionalData,
       ValidDate.from( createdAt ),
@@ -170,7 +170,7 @@ export class Product {
     }
 
     const priceValue = wrapType(
-      () => ValidNumber.from( price ) )
+      () => ValidDecimal.from( price ) )
 
     if ( priceValue instanceof BaseException ) {
       errors.push( priceValue )
@@ -210,7 +210,7 @@ export class Product {
       urlValue as ValidString,
       titleValue as ValidString,
       descriptionValue,
-      priceValue as ValidNumber,
+      priceValue as ValidDecimal,
       currencyValue as ValidString,
       additionalData,
       createdAtValue as ValidDate,

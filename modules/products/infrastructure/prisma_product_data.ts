@@ -17,6 +17,46 @@ export class PrismaProductData extends ProductDAO {
     super()
   }
 
+  async upsert( product: Product ): Promise<Either<BaseException, boolean>> {
+    try {
+      await this.client.product.upsert( {
+        where: {
+          id: product.id.toString()
+        },
+        update: {
+          storeId       : product.storeId.toString(),
+          brandId       : product.brandId?.toString(),
+          categoryId    : product.categoryId?.toString(),
+          externalId    : product.externalId.value,
+          url           : product.url.value,
+          title         : product.title.value,
+          description   : product.description?.value,
+          price         : product.price.value,
+          currency      : product.currency.value,
+          additionalData: product.additionalData
+        },
+        create: {
+          id            : product.id.toString(),
+          storeId       : product.storeId.toString(),
+          brandId       : product.brandId?.toString(),
+          categoryId    : product.categoryId?.toString(),
+          externalId    : product.externalId.value,
+          url           : product.url.value,
+          title         : product.title.value,
+          description   : product.description?.value,
+          price         : product.price.value,
+          currency      : product.currency.value,
+          additionalData: product.additionalData
+        }
+      } )
+      return right( true )
+    } catch ( e: any ) {
+      return left( new InfrastructureException( e.message ) )
+    }
+  }
+
+
+
   async search(
     query: Record<string, any>,
     limit?: ValidInteger,
@@ -111,7 +151,8 @@ export class PrismaProductData extends ProductDAO {
         product.price,
         product.currency,
         product.additionalData,
-        product.createdAt
+        product.createdAt,
+        product.updatedAt,
       )
 
       if ( mapped instanceof Errors ) {

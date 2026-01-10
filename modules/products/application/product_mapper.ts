@@ -1,15 +1,17 @@
-import { Product }           from "../domain/product"
-import { type ProductResponse } from "./ProductResponse"
-import { Errors }            from "../../shared/domain/exceptions/errors"
-import { wrapType }          from "../../shared/utils/wrap_type"
+import { Product }              from "../domain/product"
+import { Errors }               from "../../shared/domain/exceptions/errors"
+import { wrapType }             from "../../shared/utils/wrap_type"
 import {
   BaseException
-}                            from "../../shared/domain/exceptions/base_exception"
+}                               from "../../shared/domain/exceptions/base_exception"
 import {
   ValidString
-}                            from "../../shared/domain/value_objects/valid_string"
-import { UUID }              from "../../shared/domain/value_objects/uuid"
-import { ValidNumber }       from "../../shared/domain/value_objects/valid_number"
+}                               from "../../shared/domain/value_objects/valid_string"
+import { UUID }                 from "../../shared/domain/value_objects/uuid"
+import { ProductResponse }      from "./product_response"
+import {
+  ValidDecimal
+}                               from "../../shared/domain/value_objects/valid_decimal"
 
 export class ProductMapper {
   static toDTO( product: Product ): ProductResponse {
@@ -76,7 +78,7 @@ export class ProductMapper {
       if ( description instanceof BaseException ) errors.push( description )
     }
 
-    const price = wrapType( () => ValidNumber.from( product.price ) )
+    const price = wrapType( () => ValidDecimal.from( product.price ) )
     if ( price instanceof BaseException ) errors.push( price )
 
     const currency = wrapType( () => ValidString.from( product.currency ) )

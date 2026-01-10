@@ -1,19 +1,27 @@
-import { ProductDAO }        from "../domain/product_dao"
+import { ProductDAO }          from "../domain/product_dao"
 import { type Either }         from "fp-ts/Either"
-import { BaseException }       from "../../shared/domain/exceptions/base_exception"
-import { UUID }                from "../../shared/domain/value_objects/uuid"
-import { wrapType }            from "../../shared/utils/wrap_type"
+import {
+  BaseException
+}                              from "../../shared/domain/exceptions/base_exception"
+import { isLeft, left, right } from "fp-ts/lib/Either"
+import { ensureProductExist }  from "../utils/ensure_product_exist"
 
 export class RemoveProduct {
-  constructor( private productDAO: ProductDAO ) {}
+  constructor( private dao: ProductDAO ) {}
 
-  async run( id: string ): Promise<Either<BaseException, boolean>> {
-    const uuid = wrapType( () => UUID.from( id ) )
+  async execute( id: string ): Promise<Either<BaseException[], boolean>> {
+    const exist = await ensureProductExist( this.dao, id )
 
-    if ( uuid instanceof BaseException ) {
-      return { _tag: "Left", left: uuid }
+    if ( isLeft( exist ) ) {
+      return left( exist.left )
     }
 
-    return this.productDAO.remove( uuid as UUID )
+    const result = await this.dao.remove( exist.right.id )
+
+    if ( isLeft( result ) ) {
+      return left( [result.left] )
+    }
+
+    return right( true )
   }
 }
