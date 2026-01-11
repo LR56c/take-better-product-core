@@ -5,7 +5,7 @@ export function formatLocalDateTime(date: Date) {
 
 export const makeLocalDate = (yyyyMmDd: string) => {
   const [y, m, d] = yyyyMmDd.split("-").map(Number)
-  return new Date(y, m - 1, d)   // constructor con (año, mes-0-based, día)
+  return new Date(y, m - 1, d)
 }
 
 export function formatUTCDateTime(date: Date) {
