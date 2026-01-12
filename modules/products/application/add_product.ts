@@ -38,7 +38,7 @@ export class AddProduct {
       dto.description,
       dto.price,
       dto.currency,
-      dto.additional_data
+      dto.additional_data as Record<string, any>
     )
 
     if ( product instanceof Errors ) {

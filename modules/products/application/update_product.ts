@@ -33,8 +33,9 @@ export class UpdateProduct {
       dto.description,
       dto.price,
       dto.currency,
-      dto.additional_data,
-      dto.created_at
+      dto.additional_data as Record<string, any>,
+      exist.right.createdAt.value,
+      exist.right.updatedAt.value
     )
 
     if ( product instanceof Errors ) {

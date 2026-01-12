@@ -10,29 +10,47 @@ import { ensureProductExist } from "../utils/ensure_product_exist"
 import { isLeft, left }       from "fp-ts/lib/Either"
 
 export class UpsertProduct {
-  constructor( private dao: ProductDAO ) {}
+  constructor( private dao: ProductDAO ) {
+  }
 
   async run(
-    dto: ProductResponse,
+    dto: ProductResponse
   ): Promise<Either<BaseException[], boolean>> {
     const exist = await ensureProductExist( this.dao, dto.id )
 
+    let product: Product | Errors
     if ( isLeft( exist ) ) {
-        return left( exist.left )
+      product = Product.create(
+        dto.id,
+        dto.store_id,
+        dto.brand_id,
+        dto.category_id,
+        dto.external_id,
+        dto.url,
+        dto.title,
+        dto.description,
+        dto.price,
+        dto.currency,
+        dto.additional_data as Record<string, any>
+      )
     }
-    const product = Product.create(
-      dto.id,
-      dto.store_id,
-      dto.brand_id,
-      dto.category_id,
-      dto.external_id,
-      dto.url,
-      dto.title,
-      dto.description,
-      dto.price,
-      dto.currency,
-      dto.additional_data
-    )
+    else {
+      product = Product.fromPrimitives(
+        exist.right.id.value,
+        dto.store_id,
+        dto.brand_id,
+        dto.category_id,
+        dto.external_id,
+        dto.url,
+        dto.title,
+        dto.description,
+        dto.price,
+        dto.currency,
+        dto.additional_data as Record<string, any>,
+        exist.right.createdAt.value,
+        exist.right.updatedAt.value
+      )
+    }
 
     if ( product instanceof Errors ) {
       return left( product.values )
