@@ -16,7 +16,6 @@ export const getStartAndEndOfMonth = ( date: Date ): {
   }
 }
 
-// const locales = Intl.getCanonicalLocales()
 
 export const getMonthName = ( date: Date ): string => {
   const formatter = new Intl.DateTimeFormat( "en-US", {

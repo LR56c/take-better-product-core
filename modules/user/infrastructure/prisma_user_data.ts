@@ -31,7 +31,7 @@ export class PrismaUserData implements UserDAO {
         data: {
           id       : user.id.toString(),
           role     : user.role.value,
-          username : user.username.value,
+          name : user.name.value,
           createdAt: user.createdAt.toString(),
         }
       } )
@@ -87,9 +87,9 @@ export class PrismaUserData implements UserDAO {
         equals: query.role
       }
     }
-    if ( query.username ) {
-      where["username"] = {
-        contains: query.username,
+    if ( query.name ) {
+      where["name"] = {
+        contains: query.name,
         mode    : "insensitive"
       }
     }
@@ -121,13 +121,11 @@ export class PrismaUserData implements UserDAO {
       if ( skip ) {
         cursor = { [cursorBy]: skip.value }
       }
-      // const offset                    = skip ? parseInt( skip.value ) : 0
       const results                = await this.db.$transaction( [
         this.db.user.findMany( {
           where  : where,
           orderBy: orderBy,
           cursor : cursor,
-          // skip   : offset,
           skip: skip ? 1 : undefined,
           take: limit?.value
         } ),
