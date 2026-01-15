@@ -33,7 +33,6 @@ export class PrismaSubCategoryData implements SubCategoryDAO {
         data : {
           name      : subCategory.name.value,
           categoryId: subCategory.categoryId.value,
-          clinicId  : subCategory.clinicId.toString(),
         }
       } )
       return right( true )
@@ -51,7 +50,6 @@ export class PrismaSubCategoryData implements SubCategoryDAO {
           id       : subCategory.id.toString(),
           name     : subCategory.name.value,
           categoryId: subCategory.categoryId.value,
-          clinicId : subCategory.clinicId.toString(),
           createdAt: subCategory.createdAt.toString()
         }
       } )
@@ -121,7 +119,7 @@ export class PrismaSubCategoryData implements SubCategoryDAO {
           skip: skip ? 1 : undefined,
           take: limit?.value,
         } ),
-        this.db.category.count( {
+        this.db.subCategory.count( {
           where: where
         } )
       ] )
@@ -130,7 +128,6 @@ export class PrismaSubCategoryData implements SubCategoryDAO {
       for ( const item of response ) {
         const mapped = SubCategory.fromPrimitives(
           item.id.toString(),
-          item.clinicId.toString(),
           item.categoryId.toString(),
           item.name,
           item.createdAt,

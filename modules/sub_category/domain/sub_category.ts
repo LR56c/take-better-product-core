@@ -8,7 +8,6 @@ import { UUID }          from "../../shared/domain/value_objects/uuid"
 export class SubCategory {
   private constructor(
     readonly id: UUID,
-    readonly clinicId: UUID,
     readonly categoryId: UUID,
     readonly name: ValidString,
     readonly createdAt: ValidDate
@@ -18,13 +17,11 @@ export class SubCategory {
 
   static create(
     id: string,
-    clinicId: string,
     categoryId: string,
     name: string
   ): SubCategory | Errors {
     return SubCategory.fromPrimitives(
       id,
-      clinicId,
       categoryId,
       name,
       ValidDate.nowUTC()
@@ -33,14 +30,12 @@ export class SubCategory {
 
   static fromPrimitivesThrow(
     id: string,
-    clinicId: string,
     categoryId: string,
     name: string,
     createdAt: Date | string
   ): SubCategory {
     return new SubCategory(
       UUID.from( id ),
-      UUID.from( clinicId ),
       UUID.from( categoryId ),
       ValidString.from( name ),
       ValidDate.from( createdAt )
@@ -49,7 +44,6 @@ export class SubCategory {
 
   static fromPrimitives(
     id: string,
-    clinicId: string,
     categoryId: string,
     name: string,
     createdAt: Date | string
@@ -61,13 +55,6 @@ export class SubCategory {
 
     if ( idValue instanceof BaseException ) {
       errors.push( idValue )
-    }
-
-    const clinicIdValue = wrapType(
-      () => UUID.from( clinicId ) )
-
-    if ( clinicIdValue instanceof BaseException ) {
-      errors.push( clinicIdValue )
     }
 
     const categoryIdValue = wrapType(
@@ -97,7 +84,6 @@ export class SubCategory {
 
     return new SubCategory(
       idValue as UUID,
-      clinicIdValue as UUID,
       categoryIdValue as UUID,
       nameValue as ValidString,
       createdAtValue as ValidDate

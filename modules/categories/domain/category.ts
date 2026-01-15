@@ -4,13 +4,14 @@ import { wrapType }      from "../../shared/utils/wrap_type.js"
 import { BaseException } from "../../shared/domain/exceptions/base_exception.js"
 import { Errors }        from "../../shared/domain/exceptions/errors.js"
 import { ValidString }   from "../../shared/domain/value_objects/valid_string"
+import { SubCategory }   from "../../sub_category/domain/sub_category"
 
 export class Category {
   private constructor(
     readonly id: UUID,
     readonly name: ValidString,
     readonly slug: ValidString,
-    readonly parentId: UUID | null,
+    readonly subCategories: SubCategory[],
     readonly createdAt: ValidDate
   )
   {
@@ -20,13 +21,13 @@ export class Category {
     id: string,
     name: string,
     slug: string,
-    parentId: string | null
+    subCategories: SubCategory[]
   ): Category | Errors {
     return Category.fromPrimitives(
       id,
       name,
       slug,
-      parentId,
+      subCategories,
       ValidDate.nowUTC()
     )
   }
@@ -35,14 +36,14 @@ export class Category {
     id: string,
     name: string,
     slug: string,
-    parentId: string | null,
+    subCategories: SubCategory[],
     createdAt: Date | string
   ): Category {
     return new Category(
       UUID.from( id ),
       ValidString.from( name ),
       ValidString.from( slug ),
-      parentId ? UUID.from( parentId ) : null,
+      subCategories,
       ValidDate.from( createdAt )
     )
   }
@@ -51,7 +52,7 @@ export class Category {
     id: string,
     name: string,
     slug: string,
-    parentId: string | null,
+    subCategories: SubCategory[],
     createdAt: Date | string
   ): Category | Errors {
     const errors = []
@@ -77,16 +78,6 @@ export class Category {
       errors.push( slugValue )
     }
 
-    let parentIdValue: UUID | null = null
-    if ( parentId ) {
-      const result = wrapType( () => UUID.from( parentId ) )
-      if ( result instanceof BaseException ) {
-        errors.push( result )
-      } else {
-        parentIdValue = result as UUID
-      }
-    }
-
     const createdAtValue = wrapType(
       () => ValidDate.from( createdAt ) )
 
@@ -102,7 +93,7 @@ export class Category {
       idValue as UUID,
       nameValue as ValidString,
       slugValue as ValidString,
-      parentIdValue,
+      subCategories,
       createdAtValue as ValidDate
     )
   }

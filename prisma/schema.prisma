@@ -70,15 +70,24 @@ model Category {
   id              String          @id @default(uuid())
   name            String
   slug            String
-  parentId        String?         @map("parent_id")
-  parent          Category?       @relation("CategoryToCategory", fields: [parentId], references: [id])
-  children        Category[]      @relation("CategoryToCategory")
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @updatedAt @map("updated_at")
   products        Product[]
   storeCategories StoreCategory[]
+  subCategories   SubCategory[]
 
   @@map("categories")
+}
+
+model SubCategory {
+  id         String    @id @default(uuid())
+  categoryId String    @map("category_id")
+  name       String
+  createdAt  DateTime  @default(now()) @map("created_at")
+  category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  products   Product[]
+
+  @@map("subcategory")
 }
 
 model Product {
@@ -89,6 +98,8 @@ model Product {
   brand             Brand?             @relation(fields: [brandId], references: [id])
   categoryId        String?            @map("category_id")
   category          Category?          @relation(fields: [categoryId], references: [id])
+  subCategoryId     String?
+  subCategory       SubCategory?       @relation(fields: [subCategoryId], references: [id])
   externalId        String             @map("external_id")
   url               String
   title             String

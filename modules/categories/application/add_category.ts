@@ -10,6 +10,7 @@ import {
 }                        from "../../shared/domain/exceptions/data_not_found_exception"
 import { ensureCategoryExist } from "../utils/ensure_category_exist"
 import { CategoryResponse } from "./category_response"
+import { SubCategory } from "../../sub_category/domain/sub_category"
 
 export class AddCategory {
   constructor( private dao: CategoryDAO ) {}
@@ -25,11 +26,26 @@ export class AddCategory {
       }
     }
 
+    const subCategories : SubCategory[] = []
+    if ( dto.sub_categories ) {
+      for ( const subCategory of dto.sub_categories ) {
+        const mapped = SubCategory.create(
+          subCategory.id,
+          subCategory.category_id,
+          subCategory.name
+        )
+        if ( mapped instanceof Errors ) {
+          return left( mapped.values )
+        }
+        subCategories.push( mapped )
+      }
+    }
+
     const category = Category.create(
       dto.id,
       dto.name,
       dto.slug,
-      dto.parent_id
+      subCategories
     )
 
     if ( category instanceof Errors ) {
