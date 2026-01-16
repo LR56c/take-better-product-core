@@ -1,8 +1,8 @@
-import { UUID }          from "../../shared/domain/value_objects/uuid.js"
-import { ValidDate }     from "../../shared/domain/value_objects/valid_date.js"
-import { wrapType }      from "../../shared/utils/wrap_type.js"
-import { BaseException } from "../../shared/domain/exceptions/base_exception.js"
-import { Errors }        from "../../shared/domain/exceptions/errors.js"
+import { UUID }          from "../../shared/domain/value_objects/uuid"
+import { ValidDate }     from "../../shared/domain/value_objects/valid_date"
+import { wrapType }      from "../../shared/utils/wrap_type"
+import { BaseException } from "../../shared/domain/exceptions/base_exception"
+import { Errors }        from "../../shared/domain/exceptions/errors"
 import { ValidString }   from "../../shared/domain/value_objects/valid_string"
 import { Country }       from "../../countries/domain/country"
 

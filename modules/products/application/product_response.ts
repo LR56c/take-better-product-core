@@ -11,7 +11,7 @@ export const ProductSchema = z.object({
     description: z.string().nullable(),
     price: z.number(),
     currency: z.string().length(3),
-    additional_data: z.json().nullable()
+    additional_data: zon().nullable()
 });
 
 export type ProductResponse = z.infer<typeof ProductSchema>;

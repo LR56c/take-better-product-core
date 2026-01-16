@@ -1,4 +1,4 @@
-import { type Either, isLeft, left, right } from "fp-ts/lib/Either.js"
+import { type Either, isLeft, left, right } from "fp-ts/lib/Either"
 import {
   BaseException
 }                                      from "../../shared/domain/exceptions/base_exception"

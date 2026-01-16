@@ -1,4 +1,4 @@
-import { Errors }        from "../../shared/domain/exceptions/errors.js"
+import { Errors }        from "../../shared/domain/exceptions/errors"
 import { User }          from "../domain/user"
 import { UserResponse }  from "./user_response"
 import { wrapType }      from "../../shared/utils/wrap_type"

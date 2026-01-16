@@ -1,7 +1,7 @@
 import { z }                   from "zod"
 import { Either, left, right } from "fp-ts/Either"
-import { DomainException }     from "../domain/exceptions/domain_exception.js"
-import { BaseException }       from "../domain/exceptions/base_exception.js"
+import { DomainException }     from "../domain/exceptions/domain_exception"
+import { BaseException }       from "../domain/exceptions/base_exception"
 
 export class InvalidParseException extends DomainException {
   constructor( message?: string ) {

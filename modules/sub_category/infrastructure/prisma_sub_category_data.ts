@@ -7,7 +7,7 @@ import {
   ValidString
 }                              from "../../shared/domain/value_objects/valid_string"
 import { type PaginatedResult }     from "../../shared/domain/paginated_result"
-import { type Either, left, right } from "fp-ts/lib/Either.js"
+import { type Either, left, right } from "fp-ts/lib/Either"
 import * as changeCase         from "change-case"
 import {
   InfrastructureException

@@ -1,14 +1,14 @@
 import { type Either, left, right } from "fp-ts/Either"
-import { wrapTypeDefault }          from "./wrap_type.js"
+import { wrapTypeDefault }          from "./wrap_type"
 import {
   BaseException
-}                                   from "../domain/exceptions/base_exception.js"
+}                                   from "../domain/exceptions/base_exception"
 import {
   ValidString
-}                                   from "../domain/value_objects/valid_string.js"
+}                                   from "../domain/value_objects/valid_string"
 import {
   ValidInteger
-}                                   from "../domain/value_objects/valid_integer.js"
+}                                   from "../domain/value_objects/valid_integer"
 
 type GenericSearch = {
   validLimit?: ValidInteger,
