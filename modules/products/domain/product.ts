@@ -7,6 +7,7 @@ import { ValidString }   from "../../shared/domain/value_objects/valid_string"
 import { ValidDecimal } from "../../shared/domain/value_objects/valid_decimal"
 
 export class Product {
+  //TODO: ajustar
   private constructor(
     readonly id: UUID,
     readonly storeId: UUID,

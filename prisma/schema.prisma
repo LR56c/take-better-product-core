@@ -153,11 +153,13 @@ model StoreCategory {
 }
 
 model ProductEmbedding {
-  id        String   @id @default(uuid())
-  productId String   @map("product_id")
-  product   Product  @relation(fields: [productId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id        String                      @id @default(uuid())
+  content   String
+  embedding Unsupported("vector(1536)")
+  productId String                      @map("product_id")
+  product   Product                     @relation(fields: [productId], references: [id])
+  createdAt DateTime                    @default(now()) @map("created_at")
+  updatedAt DateTime                    @updatedAt @map("updated_at")
 
   @@map("product_embeddings")
 }
