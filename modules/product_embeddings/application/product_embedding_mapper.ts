@@ -99,10 +99,16 @@ export class ProductEmbeddingMapper {
 
 
   static toDomain( json: Record<string, any> ): ProductEmbedding | Errors {
-    //TODO: check product (incluir gifty)
+
+    const product = ProductMapper.toDomain(json.product)
+    if ( product instanceof Errors ) {
+      return product
+    }
+
+
     return ProductEmbedding.fromPrimitives(
       json.id,
-      json.product,
+      product,
       json.content,
       json.vector ?? [],
       json.created_at,
