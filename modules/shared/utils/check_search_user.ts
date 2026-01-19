@@ -8,13 +8,11 @@ import {
 }                                      from "../../shared/domain/exceptions/data_not_found_exception"
 import { User }                        from "../../user/domain/user"
 import {
-  SearchAdminUser
-}                                      from "../../user/application/search_admin_user"
-import {
   ValidString
 }                                      from "../domain/value_objects/valid_string"
+import { SearchUser }                  from "../../user/application/search_user"
 
-export const checkSearchUser = async ( search: SearchAdminUser,
+export const checkSearchUser = async ( search: SearchUser,
   id: string ): Promise<Either<BaseException[], User>> => {
   const _id = wrapType( () => ValidString.from( id ) )
 
