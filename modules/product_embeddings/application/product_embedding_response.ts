@@ -1,11 +1,8 @@
-import { z }                   from "zod"
-import {
-  ProductSchema
-}                              from "../../products/application/product_response"
+import { z } from "zod"
 
 export const productEmbeddingResponseSchema = z.object( {
   id        : z.string(),
-  product   : ProductSchema,
+  product_id        : z.string(),
   content   : z.string(),
   created_at: z.iso.datetime(),
   updated_at: z.iso.datetime().nullish(),

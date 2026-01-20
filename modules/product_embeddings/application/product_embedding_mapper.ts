@@ -14,17 +14,13 @@ import {
 import {
   ValidDate
 }                                    from "../../shared/domain/value_objects/valid_date"
-import {
-  ProductMapper
-}                                    from "../../products/application/product_mapper"
-import { ProductResponse } from "../../products/application/product_response"
 
 export class ProductEmbeddingMapper {
 
   static toDTO( embed: ProductEmbedding ): ProductEmbeddingResponse {
     return {
       id        : embed.id.toString(),
-      product   : ProductMapper.toDTO( embed.product ),
+      product_id   : embed.productId.toString(),
       content   : embed.content.value,
       updated_at: embed.updatedAt?.toString(),
       created_at: embed.createdAt.toString()
@@ -35,7 +31,7 @@ export class ProductEmbeddingMapper {
   static toJSON( embed: ProductEmbeddingResponse ): Record<string, any> {
     return {
       id        : embed.id,
-      product   : ProductMapper.toJSON( embed.product ),
+      product_id: embed.product_id,
       content   : embed.content,
       updated_at: embed.updated_at,
       created_at: embed.created_at
@@ -69,9 +65,10 @@ export class ProductEmbeddingMapper {
       errors.push( updatedAt )
     }
 
-    const product = ProductMapper.fromJSON( json.product )
-    if ( product instanceof Errors ) {
-      errors.push( ...product.values )
+    const productId = wrapType( () => UUID.from( json.id ) )
+
+    if ( productId instanceof BaseException ) {
+      errors.push( productId )
     }
 
     if ( errors.length > 0 ) {
@@ -85,9 +82,9 @@ export class ProductEmbeddingMapper {
       content        : (
         content as ValidString
       ).value,
-      product        : (
-        product as ProductResponse
-      ),
+      product_id: (
+        productId as UUID
+      ).toString(),
       created_at     : (
         createdAt as ValidDate
       ).toString(),
@@ -100,15 +97,9 @@ export class ProductEmbeddingMapper {
 
   static toDomain( json: Record<string, any> ): ProductEmbedding | Errors {
 
-    const product = ProductMapper.toDomain(json.product)
-    if ( product instanceof Errors ) {
-      return product
-    }
-
-
     return ProductEmbedding.fromPrimitives(
       json.id,
-      product,
+      json.product_id,
       json.content,
       json.vector ?? [],
       json.created_at,

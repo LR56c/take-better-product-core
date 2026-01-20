@@ -12,12 +12,11 @@ import { wrapType } from "../../shared/utils/wrap_type"
 import {
   BaseException
 }                                    from "../../shared/domain/exceptions/base_exception"
-import { Product }                   from "../../products/domain/product"
 
 export class ProductEmbedding {
   private constructor(
     readonly id: UUID,
-    readonly product: Product,
+    readonly productId: UUID,
     readonly content: ValidString,
     readonly vector: number[],
     readonly createdAt: ValidDate,
@@ -28,19 +27,19 @@ export class ProductEmbedding {
 
   static create(
     id: string,
-    product: Product,
+    productId: string,
     content: string,
     vector: number[],
   ): ProductEmbedding | Errors {
     return ProductEmbedding.fromPrimitives(
-      id, product, content, vector,
+      id, productId, content, vector,
       ValidDate.nowUTC(), undefined
     )
   }
 
   static fromPrimitives(
     id: string,
-    product: Product,
+    productId: string,
     content: string,
     vector: number[],
     createdAt: Date | string,
@@ -53,6 +52,13 @@ export class ProductEmbedding {
 
     if ( idVO instanceof BaseException ) {
       errors.push( idVO )
+    }
+
+    const productIdValue = wrapType(
+      () => UUID.from( id ) )
+
+    if ( productIdValue instanceof BaseException ) {
+      errors.push( productIdValue )
     }
 
     const contentVO = wrapType(
@@ -82,7 +88,7 @@ export class ProductEmbedding {
 
     return new ProductEmbedding(
       idVO as UUID,
-      product,
+      productIdValue as UUID,
       contentVO as ValidString,
       vector,
       createdAtVO as ValidDate,
