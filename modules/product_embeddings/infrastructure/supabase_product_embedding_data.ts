@@ -88,6 +88,4 @@ export class SupabaseWorkerEmbeddingData
   async upsert( embed: ProductEmbedding ): Promise<Either<BaseException, boolean>> {
     return left(new InfrastructureException())
   }
-
-
 }

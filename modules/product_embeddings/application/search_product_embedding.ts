@@ -5,7 +5,6 @@ import {
 import {
   genericEnsureSearch
 }                                    from "../../shared/utils/generic_ensure_search"
-import { type PaginatedResult }      from "../../shared/domain/paginated_result"
 import { ProductEmbedding }          from "../domain/product_embedding"
 import {
   ProductEmbeddingRepository
@@ -20,7 +19,7 @@ export class SearchProductEmbedding {
 
   async execute( query: Record<string, any>, limit ?: number,
     skip ?: string, sortBy ?: string,
-    sortType ?: string ): Promise<Either<BaseException[], PaginatedResult<ProductEmbedding>>>
+    sortType ?: string ): Promise<Either<BaseException[], ProductEmbedding[]>>
   {
     const searchParamsResult = genericEnsureSearch( limit, skip, sortBy,
       sortType )
