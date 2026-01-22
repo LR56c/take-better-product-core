@@ -169,17 +169,12 @@ export class PrismaProductEmbeddingData
       const embeds: ProductEmbedding[] = []
       for ( const embed of response ) {
         // @ts-ignore
-        const mappedProduct = parseProduct( embed.product )
-        if ( mappedProduct instanceof Errors ) {
-          return left( mappedProduct.values )
-        }
-
         const vectorString = vectorMap.get(embed.id) || '[]';
         const vector = JSON.parse(vectorString);
 
         const embedding = ProductEmbedding.fromPrimitives(
           embed.id,
-          mappedProduct,
+          embed.productId,
           embed.content,
           vector,
           embed.createdAt,
