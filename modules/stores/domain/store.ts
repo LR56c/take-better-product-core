@@ -5,6 +5,7 @@ import { BaseException } from "../../shared/domain/exceptions/base_exception"
 import { Errors }        from "../../shared/domain/exceptions/errors"
 import { ValidString }   from "../../shared/domain/value_objects/valid_string"
 import { Country }       from "../../countries/domain/country"
+import { StoreCategory } from "./store_category"
 
 export class Store {
   private constructor(
@@ -14,6 +15,7 @@ export class Store {
     readonly url: ValidString | null,
     readonly thumbnail: ValidString | null,
     readonly type: ValidString,
+    readonly storesCategories: StoreCategory[],
     readonly createdAt: ValidDate
   )
   {
@@ -25,7 +27,8 @@ export class Store {
     name: string,
     url: string | null,
     thumbnail: string | null,
-    type: string
+    type: string,
+    storesCategories: StoreCategory[]
   ): Store | Errors {
     return Store.fromPrimitives(
       id,
@@ -34,6 +37,7 @@ export class Store {
       url,
       thumbnail,
       type,
+      storesCategories,
       ValidDate.nowUTC()
     )
   }
@@ -45,6 +49,7 @@ export class Store {
     url: string | null,
     thumbnail: string | null,
     type: string,
+    storesCategories: StoreCategory[],
     createdAt: Date | string
   ): Store {
     return new Store(
@@ -54,6 +59,7 @@ export class Store {
       url ? ValidString.from( url ) : null,
       thumbnail ? ValidString.from( thumbnail ) : null,
       ValidString.from( type ),
+      storesCategories,
       ValidDate.from( createdAt )
     )
   }
@@ -65,6 +71,7 @@ export class Store {
     url: string | null,
     thumbnail: string | null,
     type: string,
+    storesCategories: StoreCategory[],
     createdAt: Date | string
   ): Store | Errors {
     const errors = []
@@ -128,6 +135,7 @@ export class Store {
       urlValue,
       thumbnailValue,
       typeValue as ValidString,
+      storesCategories,
       createdAtValue as ValidDate
     )
   }
