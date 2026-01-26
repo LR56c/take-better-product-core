@@ -19,6 +19,9 @@ import {
 import {
   CountryDTO
 }                                        from "../../countries/application/country_dto"
+import { StoreCategoryMapper }           from "./store_category_mapper"
+import { StoreCategoryDTO }              from "./store_category_dto"
+import { StoreCategory }                 from "../domain/store_category"
 
 export class StoreMapper {
   static toDTO( store: Store ): StoreResponse {
@@ -28,7 +31,8 @@ export class StoreMapper {
       name     : store.name.value,
       url      : store.url?.value ?? null,
       thumbnail: store.thumbnail?.value ?? null,
-      type     : store.type.value as StoreType
+      type     : store.type.value as StoreType,
+      categories: store.storesCategories.map(StoreCategoryMapper.toDTO)
     }
   }
 
@@ -39,7 +43,9 @@ export class StoreMapper {
       name     : store.name,
       url      : store.url,
       thumbnail: store.thumbnail,
-      type     : store.type
+      type     : store.type,
+      categories: store.categories.map(StoreCategoryMapper.toJSON)
+
     }
   }
 
@@ -77,6 +83,19 @@ export class StoreMapper {
       errors.push( ...country.values )
     }
 
+    const categories : StoreCategoryDTO[] = []
+    if ( store.categories ) {
+      for ( const category of store.categories ) {
+        const mapped = StoreCategoryMapper.fromJSON( category )
+        if ( mapped instanceof Errors ) {
+          errors.push( ...mapped.values )
+        }
+        else {
+          categories.push( mapped )
+        }
+      }
+    }
+
     if ( errors.length > 0 ) {
       return new Errors( errors )
     }
@@ -93,11 +112,26 @@ export class StoreMapper {
       thumbnail: thumbnail instanceof ValidString ? thumbnail.value : null,
       type     : (
         type as ValidString
-      ).value as StoreType
+      ).value as StoreType,
+      categories: categories
     }
   }
 
   static toDomain( json: Record<string, any> ): Store | Errors {
+
+    const categories : StoreCategory[] = []
+    if ( json.categories ) {
+      for ( const category of json.categories ) {
+        const mapped = StoreCategoryMapper.toDomain( category )
+        if ( mapped instanceof Errors ) {
+          return new Errors( mapped.values)
+        }
+        else {
+          categories.push( mapped )
+        }
+      }
+    }
+
     return Store.fromPrimitives(
       json.id,
       json.country_id,
@@ -105,6 +139,7 @@ export class StoreMapper {
       json.url,
       json.thumbnail,
       json.type,
+      categories,
       json.created_at
     )
   }

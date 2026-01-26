@@ -14,7 +14,7 @@ export class StoreCategoryMapper {
       storeId: storeCategory.storeId.value,
       categoryId: storeCategory.categoryId.value,
       url: storeCategory.url?.value ?? null,
-      isActive: storeCategory.isActive.value
+      isActive: storeCategory.isActive.value,
     }
   }
 
