@@ -20,6 +20,7 @@ import {
 }                                   from "../../shared/domain/exceptions/infrastructure_exception"
 import { Country }                  from "../../countries/domain/country"
 import { Errors }                   from "../../shared/domain/exceptions/errors"
+import { StoreCategory }            from "../domain/store_category"
 
 
 export class PrismaStoreData implements StoreDAO {
@@ -69,7 +70,8 @@ export class PrismaStoreData implements StoreDAO {
         skip   : offset,
         take   : limit?.value,
         include: {
-          country: true
+          country        : true,
+          storeCategories: true
         }
       } ),
       this.client.store.count( {
@@ -81,6 +83,20 @@ export class PrismaStoreData implements StoreDAO {
     const stores: Store[]        = []
 
     for ( const store of response ) {
+      const cats: StoreCategory[] = []
+      for ( const c of store.storeCategories ) {
+        const mappedCat = StoreCategory.fromPrimitives(
+          c.id,
+          c.storeId,
+          c.categoryId,
+          c.url,
+          c.isActive,
+          c.createdAt )
+        if ( mappedCat instanceof Errors ) {
+          return left( mappedCat.values )
+        }
+        cats.push( mappedCat )
+      }
       const mappedCountry = Country.fromPrimitives(
         store.country.id,
         store.country.name,
@@ -100,6 +116,7 @@ export class PrismaStoreData implements StoreDAO {
         store.url,
         store.thumbnail,
         store.type,
+        cats,
         store.createdAt
       )
 
@@ -118,17 +135,30 @@ export class PrismaStoreData implements StoreDAO {
 
   async add( store: Store ): Promise<Either<BaseException, boolean>> {
     try {
-      await this.client.store.create( {
-        data: {
-          id       : store.id.toString(),
-          name     : store.name.value,
-          url      : store.url?.value,
-          thumbnail: store.thumbnail?.value,
-          type     : store.type.value,
-          countryId: store.country.id.toString(),
-          createdAt: store.createdAt.toString()
-        }
-      } )
+      await this.client.$transaction( [
+        this.client.store.create( {
+          data: {
+            id       : store.id.toString(),
+            name     : store.name.value,
+            url      : store.url?.value,
+            thumbnail: store.thumbnail?.value,
+            type     : store.type.value,
+            countryId: store.country.id.toString(),
+            createdAt: store.createdAt.toString()
+          }
+        } ),
+        this.client.storeCategories.createMany( {
+          data: store.storesCategories.map( category => (
+            {
+              id        : category.id.toString(),
+              storeId   : store.id.toString(),
+              categoryId: category.categoryId.toString(),
+              url       : category.url?.value,
+              isActive  : category.isActive.value
+            }
+          ) )
+        } )
+      ] )
       return right( true )
     }
     catch ( e ) {
@@ -138,18 +168,38 @@ export class PrismaStoreData implements StoreDAO {
 
   async update( store: Store ): Promise<Either<BaseException, boolean>> {
     try {
-      await this.client.store.update( {
-        where: {
-          id: store.id.toString()
-        },
-        data : {
-          name     : store.name.value,
-          url      : store.url?.value,
-          thumbnail: store.thumbnail?.value,
-          type     : store.type.value,
-          countryId: store.country.id.toString()
-        }
-      } )
+      await this.client.$transaction( [
+        await this.client.storeCategories.deleteMany( {
+          where: {
+            storeId: store.id.toString()
+
+          }
+        } ),
+        this.client.storeCategories.createMany( {
+          data: store.storesCategories.map( category => (
+            {
+              id        : category.id.toString(),
+              storeId   : store.id.toString(),
+              categoryId: category.categoryId.toString(),
+              url       : category.url?.value,
+              isActive  : category.isActive.value,
+              createdAt : category.createdAt.toString()
+            }
+          ) )
+        } ),
+        this.client.store.update( {
+          where: {
+            id: store.id.toString()
+          },
+          data : {
+            name     : store.name.value,
+            url      : store.url?.value,
+            thumbnail: store.thumbnail?.value,
+            type     : store.type.value,
+            countryId: store.country.id.toString()
+          }
+        } )
+      ] )
       return right( true )
     }
     catch ( e ) {
@@ -159,11 +209,18 @@ export class PrismaStoreData implements StoreDAO {
 
   async remove( id: UUID ): Promise<Either<BaseException, boolean>> {
     try {
-      await this.client.store.delete( {
-        where: {
-          id: id.toString()
-        }
-      } )
+      await this.client.$transaction( [
+        this.client.storeCategories.deleteMany( {
+          where: {
+            storeId: id.toString()
+          }
+        } ),
+        this.client.store.delete( {
+          where: {
+            id: id.toString()
+          }
+        } )
+      ] )
       return right( true )
     }
     catch ( e ) {
