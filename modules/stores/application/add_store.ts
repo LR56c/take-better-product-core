@@ -13,6 +13,8 @@ import {
   DataNotFoundException
 }                        from "../../shared/domain/exceptions/data_not_found_exception"
 import { ensureStoreExist } from "../utils/ensure_store_exist"
+import { StoreCategory } from "../domain/store_category"
+import { ValidDate } from "../../shared/domain/value_objects/valid_date"
 
 export class AddStore {
   constructor( private dao: StoreDAO ) {}
@@ -34,13 +36,32 @@ export class AddStore {
       return left( countryExist.left )
     }
 
+    const categories : StoreCategory[]  =[]
+    for ( const c of dto.categories ) {
+      const result = StoreCategory.fromPrimitives(
+        c.id,
+        dto.id,
+        c.category_id,
+        c.url,
+        c.is_active,
+        ValidDate.nowUTC()
+      )
+      if ( result instanceof Errors ) {
+        return left( result.values )
+      }
+      else {
+        categories.push( result )
+      }
+    }
+
     const store = Store.create(
       dto.id,
       countryExist.right,
       dto.name,
       dto.url,
       dto.thumbnail,
-      dto.type
+      dto.type,
+      categories
     )
 
     if ( store instanceof Errors ) {

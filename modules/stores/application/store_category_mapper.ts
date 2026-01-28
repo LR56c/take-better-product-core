@@ -11,20 +11,20 @@ export class StoreCategoryMapper {
   static toDTO( storeCategory: StoreCategory ): StoreCategoryDTO {
     return {
       id: storeCategory.id.toString(),
-      storeId: storeCategory.storeId.value,
-      categoryId: storeCategory.categoryId.value,
+      store_id: storeCategory.storeId.value,
+      category_id: storeCategory.categoryId.value,
       url: storeCategory.url?.value ?? null,
-      isActive: storeCategory.isActive.value,
+      is_active: storeCategory.isActive.value,
     }
   }
 
   static toJSON( storeCategory: StoreCategoryDTO ): Record<string, any> {
     return {
       id: storeCategory.id,
-      store_id: storeCategory.storeId,
-      category_id: storeCategory.categoryId,
+      store_id: storeCategory.store_id,
+      category_id: storeCategory.category_id,
       url: storeCategory.url,
-      is_active: storeCategory.isActive
+      is_active: storeCategory.is_active
     }
   }
 
@@ -55,10 +55,10 @@ export class StoreCategoryMapper {
 
     return {
       id: (id as UUID).toString(),
-      storeId: (storeId as ValidString).value,
-      categoryId: (categoryId as ValidString).value,
+      store_id: (storeId as ValidString).value,
+      category_id: (categoryId as ValidString).value,
       url: url instanceof ValidString ? url.value : null,
-      isActive: (isActive as ValidBool).value
+      is_active: (isActive as ValidBool).value
     }
   }
 
