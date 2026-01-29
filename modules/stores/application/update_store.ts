@@ -8,6 +8,10 @@ import { Errors }              from "../../shared/domain/exceptions/errors"
 import { isLeft, left, right } from "fp-ts/lib/Either"
 import { StoreResponse }       from "./store_response"
 import { ensureStoreExist }    from "../utils/ensure_store_exist"
+import { StoreCategory }       from "../domain/store_category"
+import {
+  ValidDate
+}                              from "../../shared/domain/value_objects/valid_date"
 
 export class UpdateStore {
   constructor( private dao: StoreDAO ) {}
@@ -20,6 +24,25 @@ export class UpdateStore {
       return left( exist.left )
     }
 
+
+    const categories : StoreCategory[]  =[]
+    for ( const c of dto.categories ) {
+      const result = StoreCategory.fromPrimitives(
+        c.id,
+        dto.id,
+        c.category_id,
+        c.url,
+        c.is_active,
+        ValidDate.nowUTC()
+      )
+      if ( result instanceof Errors ) {
+        return left( result.values )
+      }
+      else {
+        categories.push( result )
+      }
+    }
+
     const newStore = Store.fromPrimitives(
       exist.right.id.toString(),
       exist.right.country,
@@ -27,6 +50,7 @@ export class UpdateStore {
       dto.url,
       dto.thumbnail,
       dto.type,
+      categories,
       exist.right.createdAt.toString()
     )
 
